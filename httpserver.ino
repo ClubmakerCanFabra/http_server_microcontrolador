@@ -4,16 +4,15 @@
 #define WLAN_SSID "ClubMaker"
 #define WLAN_PASS "ClubM@ker"
 
-WiFiServer server;
-bool isServerAviable = false;
+WiFiServer server(80);
+
 void setup()
 {
     Serial.begin(9600);
     
     WifiConnect();
     Serial.println("Starting http server");
-    server = new WiFiServer(80);
-    isServerAviable = true;
+    server.begin();
 }
 
 void WifiConnect()
@@ -36,11 +35,17 @@ void WifiConnect()
 
 void loop()
 {
-    if(isServerAviable == false) {
-        return;
-    }
     WiFiClient client = server.available();
     if(client) {
         Serial.println("New Client");
+        client.println("HTTP/1.1 200 OK");
+
+        int clientHeadersIndex = 0;
+        Serial.print(client.read());
+        Serial.println(clientHeadersIndex);
+        //client.println("Content-type:text/html");
+        //client.println();
+        //client.println("<h1>Hello World</h1>");
+        client.stop();
     }
 }
